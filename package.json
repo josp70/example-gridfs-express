@@ -1,0 +1,30 @@
+{
+  "name": "example-gridfs-express",
+  "version": "1.0.0",
+  "description": "Example using gridfs-express package",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "lint": "eslint *.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/jorge.suit/example-gridfs-express.git"
+  },
+  "keywords": [
+    "gridfs",
+    "express"
+  ],
+  "author": "Jorge Suit <josp.jorge@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/jorge.suit/example-gridfs-express/issues"
+  },
+  "homepage": "https://gitlab.com/jorge.suit/example-gridfs-express#README",
+  "dependencies": {
+    "eslint": "^4.19.0",
+    "express-list-routes": "^0.1.4",
+    "gridfs-express": "^1.0.2"
+  }
+}
