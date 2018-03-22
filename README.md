@@ -20,14 +20,14 @@ PORT=3002 npm start
 
 The following examples use the client [httpie](https://github.com/jakubroztocil/httpie)
 
-### Try to list files when metadata key is nor provided: `GET /api/gridfs/v1`
+### Try to list files when metadata key is not provided: `GET /api/gridfs/v2`
 
 #### Request
 ```
-http -v GET 'localhost:3002/api/gridfs/v1'
+http -v GET 'localhost:3002/api/gridfs/v2'
 ```
 ```
-GET /api/gridfs/v1 HTTP/1.1
+GET /api/gridfs/v2 HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -36,6 +36,9 @@ User-Agent: HTTPie/0.9.2
 ```
 
 #### Response
+
+The response for this error situation contains the array of missing url query parameters.
+
 ```
 HTTP/1.1 400 Bad Request
 Connection: keep-alive
@@ -47,7 +50,11 @@ X-Powered-By: Express
 
 {
     "data": {
-        "parameter": "name"
+        "parameters": [
+            "name", 
+            "family", 
+            "ref"
+        ]
     }, 
     "error": "Bad Request", 
     "message": "required query parameter", 
@@ -55,17 +62,17 @@ X-Powered-By: Express
 }
 ```
 
-### List files with a complete key vector (name, family, ref): `GET /api/gridfs/v1`
+### List files with a complete key vector (name, family, ref): `GET /api/gridfs/v2`
 
 For a given vector key we can store multiples files with different names.
 
 #### Request
 
 ```
-http -v GET 'localhost:3002/api/gridfs/v1?name=tork&family=gree&ref=kerp'
+http -v GET 'localhost:3002/api/gridfs/v2?name=tork&family=gree&ref=kerp'
 ```
 ```
-GET /api/gridfs/v1?name=andtork&family=gree&ref=kerp HTTP/1.1
+GET /api/gridfs/v2?name=andtork&family=gree&ref=kerp HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -75,7 +82,7 @@ User-Agent: HTTPie/0.9.2
 
 #### Response
 
-The response is an empty array because there is not file for the key `(name=andtork, family=green, ref=kerp)`
+The response is an empty array because there is no file for the key `(name=andtork, family=green, ref=kerp)`
 
 ```
 HTTP/1.1 200 OK
@@ -89,15 +96,15 @@ X-Powered-By: Express
 []
 ```
 
-### Upload a file: `POST /api/gridfs/v1`
+### Upload a file: `POST /api/gridfs/v2`
 
 #### Request
 
 ```
-http -v --form POST 'localhost:3002/api/gridfs/v1?name=andtork&family=gree&ref=kerp' file@sample_A.txt 
+http -v --form POST 'localhost:3002/api/gridfs/v2?name=andtork&family=gree&ref=kerp' file@sample_A.txt 
 ```
 ```
-POST /api/gridfs/v1?name=andtork&family=gree&ref=kerp HTTP/1.1
+POST /api/gridfs/v2?name=andtork&family=gree&ref=kerp HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -131,15 +138,15 @@ X-Powered-By: Express
 }
 ```
 
-### List the files: `GET /api/gridfs/v1`
+### List the files: `GET /api/gridfs/v2`
 
 #### Request
 
 ```
-http -v GET 'localhost:3002/api/gridfs/v1?name=andtork&family=gree&ref=kerp'
+http -v GET 'localhost:3002/api/gridfs/v2?name=andtork&family=gree&ref=kerp'
 ```
 ```
-GET /api/gridfs/v1?name=andtork&family=gree&ref=kerp HTTP/1.1
+GET /api/gridfs/v2?name=andtork&family=gree&ref=kerp HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -177,7 +184,7 @@ X-Powered-By: Express
 ]
 ```
 
-### Modify the metadata: `PATCH /api/gridfs/v1/:file_id/metadata`
+### Modify the metadata: `PATCH /api/gridfs/v2/:file_id/metadata`
 
 Besides the key stored in the metadata field we can include more properties.
 The parameter `:file_id` can be provided either as and `id` or as a `filename`.
@@ -189,10 +196,10 @@ The query parameter `key` is optional and if not provided it defaults to `id`.
 
 #### Request
 ```
-http -v PATCH 'localhost:3002/api/gridfs/v1/sample_A.txt/metadata?name=andtork&family=gree&ref=kerp&key=filename' description='This is a nice and very old object' age:=150000
+http -v PATCH 'localhost:3002/api/gridfs/v2/sample_A.txt/metadata?name=andtork&family=gree&ref=kerp&key=filename' description='This is a nice and very old object' age:=150000
 ```
 ```
-PATCH /api/gridfs/v1/sample_A.txt/metadata?name=andtork&family=gree&ref=kerp&key=filename HTTP/1.1
+PATCH /api/gridfs/v2/sample_A.txt/metadata?name=andtork&family=gree&ref=kerp&key=filename HTTP/1.1
 Accept: application/json
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -229,14 +236,14 @@ X-Powered-By: Express
 }
 ```
 
-### Retrieve metadata: `GET /api/gridfs/v1/:file_id?type=info`
+### Retrieve metadata: `GET /api/gridfs/v2/:file_id/info`
 
 #### Request
 ```
-http -v GET 'localhost:3002/api/gridfs/v1/sample_A.txt?name=andtork&family=gree&ref=kerp&type=info&key=filename'
+http -v GET 'localhost:3002/api/gridfs/v2/sample_A.txt/info?name=andtork&family=gree&ref=kerp&key=filename'
 ```
 ```
-GET /api/gridfs/v1/sample_A.txt?name=andtork&family=gree&ref=kerp&type=info&key=filename HTTP/1.1
+GET /api/gridfs/v2/sample_A.txt?name=andtork&family=gree&ref=kerp&type=info&key=filename HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
@@ -271,14 +278,14 @@ X-Powered-By: Express
 }
 ```
 
-### Delete a file: `DELETE /api/gridfs/v1/:file_id`
+### Delete a file: `DELETE /api/gridfs/v2/:file_id`
 
 #### Request
 ```
-http -v DELETE 'localhost:3002/api/gridfs/v1/sample_A.txt?name=andtork&family=gree&ref=kerp&key=filename'
+http -v DELETE 'localhost:3002/api/gridfs/v2/sample_A.txt?name=andtork&family=gree&ref=kerp&key=filename'
 ```
 ```
-DELETE /api/gridfs/v1/sample_A.txt?name=andtork&family=gree&ref=kerp&key=filename HTTP/1.1
+DELETE /api/gridfs/v2/sample_A.txt?name=andtork&family=gree&ref=kerp&key=filename HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
