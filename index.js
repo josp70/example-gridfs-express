@@ -22,7 +22,9 @@ const routerAPI = new express.Router();
 app.use(bodyParser.json());
 
 // mount routerAPI on /api/gridfs/v1
-app.use('/api/gridfs/v1', routerAPI);
+const rpath = '/api/gridfs/v2';
+
+app.use(rpath, routerAPI);
 
 // this does not work with mongo >= 3.x
 mongodb.MongoClient.connect(mongoURI, (err, database) => {
@@ -35,7 +37,7 @@ mongodb.MongoClient.connect(mongoURI, (err, database) => {
   app.listen(portService, () => {
     console.log(`server listen on ${portService}`);
     // list the end-points available
-    expressListRoutes({prefix: '/api/gridfs/v1'}, 'API:', routerAPI);
+    expressListRoutes({prefix: rpath}, 'API:', routerAPI);
   });
 });
 
